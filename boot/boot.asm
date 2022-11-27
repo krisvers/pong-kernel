@@ -17,6 +17,8 @@ start:
 
 	xor ax, ax
 	mov ds, ax
+
+; this bootloader tries reading and running from multiple disks until they don't return error
 	
 ; read next sector and run it (not good practice)
 	mov ah, 0x02	; read mode for int 0x13
@@ -58,7 +60,6 @@ start:
 	jnc .vid
 	clc
 
-	; read next sector and run it (not good practice)
 	mov ah, 0x02	; read mode for int 0x13
 	mov al, 0x24	; sectors to read (sector = 512 bytes)
 	mov ch, 0x00	; cylinder #
@@ -72,7 +73,6 @@ start:
 	jnc .vid
 	clc
 
-	; read next sector and run it (not good practice)
 	mov ah, 0x02	; read mode for int 0x13
 	mov al, 0x24	; sectors to read (sector = 512 bytes)
 	mov ch, 0x00	; cylinder #
@@ -86,7 +86,6 @@ start:
 	jnc .vid
 	clc
 
-	; read next sector and run it (not good practice)
 	mov ah, 0x02	; read mode for int 0x13
 	mov al, 0x24	; sectors to read (sector = 512 bytes)
 	mov ch, 0x00	; cylinder #
@@ -100,7 +99,6 @@ start:
 	jnc .vid
 	clc
 
-	; read next sector and run it (not good practice)
 	mov ah, 0x02	; read mode for int 0x13
 	mov al, 0x24	; sectors to read (sector = 512 bytes)
 	mov ch, 0x00	; cylinder #
@@ -114,7 +112,6 @@ start:
 	jnc .vid
 	clc
 
-	; read next sector and run it (not good practice)
 	mov ah, 0x02	; read mode for int 0x13
 	mov al, 0x24	; sectors to read (sector = 512 bytes)
 	mov ch, 0x00	; cylinder #
@@ -130,11 +127,14 @@ start:
 	
 	.vid:
 ; setup video mode
+	;	0x13:
+	;	256 colors, 320x200 pixels, 1 byte = 1 pixel
 	mov ah, 0x00
 	mov al, 0x13
 	int 0x10
 
 ; A20
+	;	compute A20 line (i just used the BIOS)
 	mov ax, 0x2403
 	int 0x15
 
@@ -177,5 +177,7 @@ gdtr:
     dw 0 ; limit
     dd 0 ; base
 
+;	pack with zeroes
 times 510-($-$$) db 0
+;	magic number
 dw 0xAA55

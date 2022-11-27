@@ -6,6 +6,8 @@ void __attribute__((section(".entry"))) _kernelentry() {
 		* addr = 0;
 	}
 
+	// jump to main()
+
 	main();
 
 	while(1);

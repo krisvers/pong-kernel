@@ -7,9 +7,10 @@ ASM := nasm
 
 .PHONY: all build clean qemu rebuild
 
-all: clean qemu
+all: clean build
 
 build:
+	@echo ">  Start compiling kernel"
 	@make --no-print-directory -C ./kernel
 	@echo ">  Linking libs and kernel..."
 	$(LD) $(LDFLAGS) --oformat binary $(DIR)/build/kernel/*.o $(DIR)/build/kernel/lib/*.o -o $(DIR)/build/bin/kernel.bin
@@ -20,10 +21,11 @@ build:
 	@dd if=build/bin/kernel.bin of=build/img/disk.img conv=notrunc seek=512 bs=1
 
 clean:
-	rm -rf build
-	mkdir -p build/kernel/lib/
-	mkdir -p build/bin/
-	mkdir -p build/img/
+	@echo ">  Cleaning folders..."
+	@rm -rf build
+	@mkdir -p build/kernel/lib/
+	@mkdir -p build/bin/
+	@mkdir -p build/img/
 
 qemu: build
 	@echo "! Starting qemu"

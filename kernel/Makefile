@@ -10,4 +10,5 @@ OBJ_FILES = $(SRC_FILES:.c=.o)
 all: $(OBJ_FILES)
 
 %.o: %.c
+	@echo ">  Compiling $<"
 	@$(CC) $(CFLAGS) -c $(DIR)/kernel/$< -o $(DIR)/build/kernel/$@
