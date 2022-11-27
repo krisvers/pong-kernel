@@ -134,7 +134,6 @@ bool win = false;
 
 void update() {
 	clear_vidmem();
-	borders();
 
 	if (ball.x < 1) {
 		ball.x = 159; ball.y = 99;
@@ -159,9 +158,11 @@ void update() {
 	number(79, 10, aScore);
 	number(239, 10, bScore);
 
+	borders();
 	draw(&ball);
 	draw(&pdl);
 	draw(&ai);
+	swap_buffers();
 
 	if (read_key_char() == 'w') {
 		pdl.y--;

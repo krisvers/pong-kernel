@@ -2,6 +2,44 @@
 org 0x7C00
 
 start:
+	jmp .skip_bpb ; Workaround for some BIOSes that require this stub
+    nop
+
+    ; Some BIOSes will do a funny and decide to overwrite bytes of code in
+    ; the section where a FAT BPB would be, potentially overwriting
+    ; bootsector code.
+    ; Avoid that by filling the BPB area with dummy values.
+    ; Some of the values have to be set to certain values in order
+    ; to boot on even quirkier machines.
+    ; Source: https://github.com/freebsd/freebsd-src/blob/82a21151cf1d7a3e9e95b9edbbf74ac10f386d6a/stand/i386/boot2/boot1.S
+  .bpb:
+    times 3-($-$$) db 0
+    .bpb_oem_id:            db "PONG    "
+    .bpb_sector_size:       dw 512
+    .bpb_sects_per_cluster: db 0
+    .bpb_reserved_sects:    dw 0
+    .bpb_fat_count:         db 0
+    .bpb_root_dir_entries:  dw 0
+    .bpb_sector_count:      dw 0
+    .bpb_media_type:        db 0
+    .bpb_sects_per_fat:     dw 0
+    .bpb_sects_per_track:   dw 18
+    .bpb_heads_count:       dw 2
+    .bpb_hidden_sects:      dd 0
+    .bpb_sector_count_big:  dd 0
+    .bpb_drive_num:         db 0
+    .bpb_reserved:          db 0
+    .bpb_signature:         db 0
+    .bpb_volume_id:         dd 0
+    .bpb_volume_label:      db "PONG       "
+    .bpb_filesystem_type:   times 8 db 0\
+
+	.skip_bpb:
+		cli
+		cld
+		jmp .init
+
+	.init:
 ; setup stack
 	cli
 	mov bp, 0x7C00
